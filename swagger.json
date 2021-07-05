@@ -1,0 +1,173 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Whatsapp API",
+    "version": "1.0.0",
+    "title": "Whatsapp API"
+  },
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/auth/checkauth": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Check auth",
+        "description": "Check if whatsapp mobile has scan qr code",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseAPI"
+            }
+          }
+        }
+      }
+    },
+    
+    "/chat/sendmessage/{phoneNo}": {
+      "post": {
+        "tags": [
+          "chat"
+        ],
+        "summary": "Send message",
+        "description": "Send message to spesific number, format 62xxxx ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "phoneNo",
+            "in": "path",
+            "description": "phone number with country number like 62xxx",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Chat message",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChatMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseAPI"
+            }
+          }
+        }
+      }
+    },
+    "/group/sendmessage/{groupName}": {
+      "post": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Send message",
+        "description": "Send message to spesific group",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "groupName",
+            "in": "path",
+            "description": "group name",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Chat message",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChatMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseAPI"
+            }
+          }
+        }
+      }
+    },
+    "/group/sendmessage": {
+      "post": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Send message",
+        "description": "Send message to spesific group",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Chat message",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupMessage"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseAPI"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResponseAPI": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "ChatMessage": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupMessage": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

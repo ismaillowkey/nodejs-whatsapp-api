@@ -8,6 +8,7 @@ const config = require('./config.json');
 const { Client } = require('whatsapp-web.js');
 const SESSION_FILE_PATH = './session.json';
 
+
 let sessionCfg;
 if (fs.existsSync(SESSION_FILE_PATH)) {
     sessionCfg = require(SESSION_FILE_PATH);
@@ -27,8 +28,8 @@ global.client = new Client({
 
 global.authed = false;
 
-const app = express();
 
+const app = express();
 const port = process.env.PORT || config.port;
 //Set Request Size Limit 50 MB
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -42,6 +43,7 @@ client.on('qr', qr => {
 
 
 client.on('authenticated', (session) => {
+    IsClientConnected = true;
     console.log("AUTH!");
     sessionCfg = session;
 
@@ -60,34 +62,68 @@ client.on('authenticated', (session) => {
 client.on('auth_failure', () => {
     console.log("AUTH Failed !")
     sessionCfg = ""
-    process.exit()
+    //process.exit()
 });
 
 client.on('ready', () => {
     console.log('Client is ready!');
 });
 
+client.on('disconnected', (reason) => {
+    // Destroy and reinitialize the client when disconnected
+    try {
+        console.log("client disconnected: ");
+        fs.unlinkSync("./session.json");
+        client.destroy();
+        client.initialize();
+    } catch(err) {
+        console.log(err)
+    }
+});
+
 client.on('message', msg => {
     if (config.webhook.enabled) {
         axios.post(config.webhook.path, { msg })
     }
-})
+});
 client.initialize();
 
+const swaggerUi = require("swagger-ui-express"),
+    swaggerDocument = require("./swagger.json");
+
 const chatRoute = require('./components/chatting');
-//const groupRoute = require('./components/group');
+const groupRoute = require('./components/group');
 const authRoute = require('./components/auth');
 //const contactRoute = require('./components/contact');
 
+/*
 app.use(function(req, res, next){
     console.log(req.method + ' : ' + req.path);
     next();
 });
+*/
+
+
+app.use(
+    '/api-docs',
+    swaggerUi.serve, 
+    swaggerUi.setup(swaggerDocument)
+);
+
 app.use('/chat',chatRoute);
-//app.use('/group',groupRoute);
+app.use('/group',groupRoute);
 app.use('/auth',authRoute);
 //app.use('/contact',contactRoute);
+
+
+app.get('/', (req, res) => {
+    res.redirect('/api-docs');
+  })
+  
 
 app.listen(port, () => {
     console.log("Server Running Live on Port : " + port);
 });
+
+
+

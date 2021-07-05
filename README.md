@@ -45,3 +45,6 @@ Sending Messages (with your country number ,like 62xxx)
 > Request Body
 > - message - contains the message to be sent
 <hr>
+
+## Swagger
+Open http://localhost:4000 and you will redirect to http://localhost:4000/api-docs
