@@ -22,9 +22,9 @@
     "shelljs": "^0.8.4",
     "swagger-ui-express": "^4.1.6",
     "valid-url": "^1.0.9",
-    "whatsapp-web.js": "^1.12.6"
+    "whatsapp-web.js": "^1.13.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "nodemon": "^2.0.10"
   }
 }
